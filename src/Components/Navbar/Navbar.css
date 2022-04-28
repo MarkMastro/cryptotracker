@@ -1,0 +1,23 @@
+li{
+    list-style: none;
+    text-decoration: none;
+    background-color: rgb(85, 67, 250);
+    width: 5em;
+    text-align: center;
+}
+.navbar{
+    background-color: rgb(105, 177, 245);
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 24px;
+}
+.page-links{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+li:hover{
+    background-color:rgb(252, 93, 44);
+}
