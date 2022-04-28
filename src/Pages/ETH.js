@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import "./ETH.css"
-
+import StockQuote from '../Components/StockQuote/StockQuote';
 export default function ETH() {
   
-  const [ethPrice, setEthPrice] = useState();
+  const [price, setPrice] = useState();
   const [priceClass, setPriceClass] = useState("");
   const [isLoading, setIsLoading] = useState(true)
-  const [Bid, setBid] = useState({})
+  const [orderBook, setOrderBook] = useState({})
   useEffect(() => {
     const ws = new WebSocket('wss://stream.binance.com:9443/ws');
     const ws2 = new WebSocket('wss://stream.binance.com:9443/ws');
@@ -18,7 +18,7 @@ export default function ETH() {
     };
     const msg2 = {
       method: 'SUBSCRIBE',
-      params: ['ethusdt@bookTicker'],
+      params: ['ethusdt@depth5'],
       id: 1,
     };
     
@@ -37,14 +37,13 @@ export default function ETH() {
     ws.onmessage=(event)=>{
       setIsLoading(false)
       const data = JSON.parse(event.data)
-      data.p > ethPrice ?  setPriceClass("price-up") : setPriceClass("price-down");
-      setEthPrice(data.p.slice(0,-6))
+      data.p > price ?  setPriceClass("price-up") : setPriceClass("price-down");
+      setPrice(data.p.slice(0,-6))
     }
 
     ws2.onmessage=(event)=>{
       const data = JSON.parse(event.data)
-      console.log(data)
-      setBid({"bestbid": data.b.slice(0,-6), "bestbidqty": data.B, "bestask": data.a.slice(0,-6), "bestaskqty": data.A})
+      setOrderBook(data)
     }
 
 
@@ -59,7 +58,7 @@ export default function ETH() {
   return (
     <>  
       <div>ETH</div>
-      {isLoading ? <p>Loading...</p> : <p className={priceClass}>{ethPrice}</p>}
+      {isLoading ? <p>Loading...</p> : <StockQuote orderBook={orderBook} price={price}/> }
     </>
   )
 }
